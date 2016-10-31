@@ -5,6 +5,7 @@ from string import ascii_letters,ascii_lowercase,printable
 from Crypto.Cipher import AES
 from Crypto import Random
 import operator
+import re
 
 alphabet=[car for car in printable]
 alphaFreq=[car for car in 'EeTtAaOoIiNn SsHhRrDdLlUu']
@@ -92,6 +93,15 @@ def decrypt( string,key,mode):
     decryptor=AES.new(key,mode,IV)
     return decryptor.decrypt(string)
 
+
+def detectRep(string):
+    result=False
+    for i in range(0,int (len(string)/16)):
+        pattern=string[i*16:(i+1)*16]
+        test=re.findall(pattern,string)
+        if len(test)>1:
+            result=True
+    return result
 
 if __name__ == '__main__':
     #XOR test
