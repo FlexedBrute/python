@@ -83,6 +83,12 @@ def genKeySizeList(min,max):
         KeySizeList.sort(key=operator.itemgetter(1))
     KeySizeList= [KeySizeList[i] for i in range(0,4)]
     return KeySizeList
+    
+def decrypt( string,key,mode):
+    IV = Random.new().read(BLOCK_SIZE)
+    decryptor=AES.new(key,mode,IV)
+    return decryptor.decrypt(string)
+
 
 if __name__ == '__main__':
     #XOR test
