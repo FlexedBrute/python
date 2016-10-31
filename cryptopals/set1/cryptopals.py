@@ -2,10 +2,13 @@
 from base64 import b64encode, b64decode
 from binascii import hexlify,unhexlify
 from string import ascii_letters,ascii_lowercase,printable
+from Crypto.Cipher import AES
+from Crypto import Random
 import operator
-#ascii_letters
+
 alphabet=[car for car in printable]
 alphaFreq=[car for car in 'EeTtAaOoIiNn SsHhRrDdLlUu']
+BLOCK_SIZE=16
 
 def xor(a,b):
     result=''
@@ -83,7 +86,7 @@ def genKeySizeList(min,max):
         KeySizeList.sort(key=operator.itemgetter(1))
     KeySizeList= [KeySizeList[i] for i in range(0,4)]
     return KeySizeList
-    
+
 def decrypt( string,key,mode):
     IV = Random.new().read(BLOCK_SIZE)
     decryptor=AES.new(key,mode,IV)
