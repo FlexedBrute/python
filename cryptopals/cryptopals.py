@@ -89,8 +89,7 @@ def genKeySizeList(min,max):
     return KeySizeList
 
 def decrypt( string,key,mode):
-    IV = Random.new().read(BLOCK_SIZE)
-    decryptor=AES.new(key,mode,IV)
+    decryptor=AES.new(key,mode)
     return decryptor.decrypt(string)
 
 
@@ -104,8 +103,10 @@ def detectRep(string):
     return result
 
 def genPadding(string,length):
+    if type(string)==str:
+        string=string.encode()
     for i in range(length-len(string)):
-        string+='\x04'
+        string+=b'\x04'
     return string
 
 if __name__ == '__main__':
@@ -141,4 +142,4 @@ if __name__ == '__main__':
     string='YELLOW SUBMARINE'
     result=b'YELLOW SUBMARINE\x04\x04\x04\x04'
     length=20
-    assert(genPadding(string,length).encode()==result)
+    assert(genPadding(string,length)==result)
