@@ -11,15 +11,6 @@ BLOCK_SIZE=16
 string=b"Il n'acheva point. Une seconde balle du meme tireur l'arreta court. Cette fois il s'abattit la face contre le pave, et ne remua plus. Cette petite grande ame venait de s'envoler."
 key=b'YELLOW SUBMARINE'
 
-
-def xor(a,b):
-    assert(len(a)==len(b))
-    result=bytearray()
-    for c in range(len(a)):
-        result.append(a[c]^b[c])
-    return bytes(result)
-
-
 def encrypt(string,key,mode):
     encryptor=AES.new(key,mode)
     return encryptor.encrypt(string)
@@ -30,10 +21,12 @@ def decrypt(string,key,mod):
 
 def encryptCBC(string,key,IV):
     encryptedString=b''
-    for i in range(int(len(string)/16)):
+    for i in range(int(len(string)/16)+1):
         block=string[i*16:(i+1)*16]
         if i<0:
             IV=blockEncrypted
+        if len(block)< 16:
+            block=genPadding(block,16)
         blockXor=xor(block,IV)
         blockEncrypted=encrypt(blockXor,key,AES.MODE_ECB)
         encryptedString+=blockEncrypted
@@ -55,5 +48,5 @@ def decryptCBC(string,key,IV):
     return decryptedString
 
 IV=b'\x00'*BLOCK_SIZE
-print(encryptCBC(string,key,IV))
+print(string)
 print(decryptCBC(encryptCBC(string,key,IV),key,IV))
