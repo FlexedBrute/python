@@ -15,7 +15,7 @@ def detectRep(string):
         if len(test)>1:
             result=True
     return result
-    
+
 try:
     with open('8.txt','rb') as file:
         string=b''
