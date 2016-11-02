@@ -89,6 +89,10 @@ def genKeySizeList(min,max):
     KeySizeList= [KeySizeList[i] for i in range(0,4)]
     return KeySizeList
 
+def encrypt(string,key,mode):
+    encryptor=AES.new(key,mode)
+    return encryptor.encrypt(string)
+
 def decrypt( string,key,mode):
     decryptor=AES.new(key,mode)
     return decryptor.decrypt(string)
@@ -109,6 +113,34 @@ def genPadding(string,length):
     for i in range(length-len(string)):
         string+=b'\x04'
     return string
+
+def encryptCBC(string,key,IV):
+    encryptedString=b''
+    for i in range(int(len(string)/16)+1):
+        block=string[i*16:(i+1)*16]
+        if i<0:
+            IV=blockEncrypted
+        if len(block)< 16:
+            block=genPadding(block,16)
+        blockXor=xor(block,IV)
+        blockEncrypted=encrypt(blockXor,key,AES.MODE_ECB)
+        encryptedString+=blockEncrypted
+    return encryptedString
+
+
+def decryptCBC(string,key,IV):
+    decryptedString=b''
+    for i in range(int(len(string)/16)):
+        block=string[i*16:(i+1)*16]
+        if i<0:
+            IV=lastBlock
+        if len(block)<16:
+            block=genPadding(block,16)
+        blockDecrypted=decrypt(block,key,AES.MODE_ECB)
+        blockXor=xor(blockDecrypted,IV)
+        decryptedString+=blockXor
+        lastBlock=block
+    return decryptedString
 
 if __name__ == '__main__':
     #XOR test
@@ -144,3 +176,9 @@ if __name__ == '__main__':
     result=b'YELLOW SUBMARINE\x04\x04\x04\x04'
     length=20
     assert(genPadding(string,length)==result)
+
+    #encrypt and decrypt CBC test
+    IV=b'\x00'*16
+    key=b'Yellow SUBMARINE'
+    string=b"Il n'acheva point. Une seconde balle du meme tireur l'arreta court. Cette fois il s'abattit la face contre le pave, et ne remua plus. Cette petite grande ame venait de s'envoler."
+    assert(string==decryptCBC(encryptCBC(string,key,IV),key,IV)[:len(string)])
