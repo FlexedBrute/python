@@ -12,11 +12,12 @@ alphaFreq=[car for car in 'EeTtAaOoIiNn SsHhRrDdLlUu']
 BLOCK_SIZE=16
 
 def xor(a,b):
-    result=''
     assert(len(a)==len(b))
+    result=bytearray()
     for c in range(len(a)):
-        result+=chr(a[c]^b[c])
-    return result
+        result.append(a[c]^b[c])
+    return bytes(result)
+
 
 def searchLetterFreq(a,c):
     assert(len(a)!=0)
@@ -114,7 +115,7 @@ if __name__ == '__main__':
     string1='1c0111001f010100061a024b53535009181c'
     string2='686974207468652062756c6c277320657965'
     result=b'746865206b696420646f6e277420706c6179'
-    output=hexlify(xor(unhexlify(string1),unhexlify(string2)).encode())
+    output=hexlify(xor(unhexlify(string1),unhexlify(string2)))
     assert(output==result)
 
     #Féquence test
@@ -129,7 +130,7 @@ if __name__ == '__main__':
     input='1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736'
     anwser="Cooking MC's like a pound of bacon"
     result=bruteForce(input)
-    assert(result['X'][1]==anwser)
+    assert(result['X'][1]==anwser.encode())
 
 
     #Hamming Distance test
